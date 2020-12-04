@@ -3,7 +3,7 @@ import {
   addResizeListener,
   removeResizeListener,
 } from '@element-plus/utils/resize-event'
-import { throttle } from 'lodash'
+import throttle from 'lodash/throttle'
 import { parseHeight } from '../util'
 import {
   TableProps,
@@ -13,7 +13,7 @@ import {
   Store,
   TableColumnCtx,
   fn,
-} from '../table'
+} from '../table.type'
 
 function useStyle(
   props: TableProps,

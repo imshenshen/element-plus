@@ -210,11 +210,48 @@ describe('click pager', () => {
       },
     })
 
-    const items = document.querySelectorAll('.el-select-dropdown__item:not(.selected)');
-    (items[0] as HTMLOptionElement)?.click()
-    await nextTick()
+    const items = wrapper.findAll('.el-select-dropdown__item:not(.selected)')
+    await items[0].trigger('click')
     expect(onSizeChange).toHaveBeenCalled()
     expect(wrapper.findComponent(Pagination).emitted()).toHaveProperty('size-change')
   })
+
+  test('should handle total size change', async () => {
+    const onCurrentChange = jest.fn()
+    const wrapper = mount({
+      components: {
+        [Pagination.name]: Pagination,
+      },
+      template: `
+        <el-pagination
+          :total="total"
+          :page-size="pageSize"
+          @current-change="onCurrentChange"
+          v-model:currentPage="currentPage"
+        />
+      },
+      `,
+      methods: {
+        onCurrentChange,
+      },
+      data() {
+        return {
+          currentPage: 3,
+          total: 1000,
+          pageSize: 100,
+        }
+      },
+    })
+
+    await nextTick()
+
+    expect(wrapper.vm.currentPage).toBe(3)
+
+    wrapper.vm.total = 100
+    await nextTick()
+    expect(wrapper.vm.currentPage).toBe(1)
+    expect(onCurrentChange).toHaveBeenCalledWith(1)
+  })
+
 })
 
